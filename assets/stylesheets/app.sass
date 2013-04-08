@@ -27,7 +27,7 @@ body
 
 
   &.dragover
-    opacity: 0.5
+    opacity: 0.5 !important
 
   .upload-link-wrapper
     width: 100%
@@ -54,3 +54,22 @@ body
         top: 0
         opacity: 0
 
+  .back-arrow
+    display: none
+    position: absolute
+    right: 15px
+    top: 50%
+    height: 24px
+    text-decoration: none
+    font-size: 24px
+    color: #699393
+    font-weight: bold
+    font-family: "Helvetica Neue", Helvetica,  Arial
+  
+#drop-area.hidden
+  .back-arrow
+    display: block
+
+  &:hover
+    opacity: 1 !important
+    cursor: pointer
