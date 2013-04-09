@@ -6,9 +6,9 @@ $(document).ready ->
 
   jQuery.event.props.push('dataTransfer')
 
-  $dropArea.on 'dragenter dragover dragleave dragend drop', (e) ->
-    if $(this).hasClass('hidden')
-      e.stopImmediatePropagation()
+  # $dropArea.on 'dragenter dragover dragleave dragend drop', (e) ->
+  #   if $(this).hasClass('hidden')
+  #     e.stopImmediatePropagation()
 
   $dropArea.on 'dragenter dragover', ->    
     $(this).addClass 'dragover'
@@ -32,42 +32,55 @@ $(document).ready ->
     , 500
 
   handleSelectedFiles = (files) ->
-    hideDropArea()
+    files = (file for file in files when file.type[0..5] == "image/")
+    return if files.length == 0
+
+    hideDropArea() unless $dropArea.hasClass 'hidden'
 
     # $photoCollection.css width: $photoCollection.width()
 
-    for file in files
+    for file in files  
       fileReader = new FileReader()
 
-      fileReader.onload = (e) ->
-        $photo = $('<div class="photo"><img /><h3></h3></div>')
-        $img = $photo.find('img')
-        $title = $photo.find('h3')
+      fileReader.onload = ((file) ->
+        (e) ->
+          $photo = $('<div class="photo">
+            <img />
+            <h3><abbr></abbr></h3>
+          </div>')
 
-        $img.attr src: e.target.result
-        angle = Math.random() * 4 - 2
-        
-        $title.text(file.name)
+          $img = $photo.find('img')
+          $title = $photo.find('h3')
 
-        $photo.css WebkitTransform: "rotate(#{angle}deg)"
+          $img.attr src: e.target.result
+          angle = Math.random() * 4 - 2      
 
-        $photoCollection.find('.photos-wrapper').append $photo
+          $title.find('abbr').attr(title: file.name)
+          
+          $photo.css WebkitTransform: "rotate(#{angle}deg)"
+          
+          if $dropArea.hasClass 'hidden'
+            $photoCollection.find('.photos-wrapper').prepend $photo
+          else
+            $photoCollection.find('.photos-wrapper').append $photo
 
-        # TODO: tekenen op canvas element ...
+          # TODO: tekenen op canvas element ...
 
-        $img.on 'load', ->
-          resizeToFit $(this), 360, 270
-    
+          $img.on 'load', ->
+            resizeToFit $(this), 360, 270
+            $title.haircut(placement: 'middle');
+      )(file)
+
       fileReader.readAsDataURL(file)
 
   hideDropArea = ->
-    $dropArea.animate left: (20 - $dropArea.width()), right: ($dropArea.width() - 20), 200, ->
+    $dropArea.animate left: (30 - $dropArea.width()), right: ($dropArea.width() - 30), 200, ->
       $(this).addClass('hidden').click -> showDropArea()
       $dropArea.css right: 'auto', width: $dropArea.width()      
 
   showDropArea = ->
     if $dropArea.hasClass 'hidden'
-      $dropArea.css right: ($dropArea.width() - 20), width: 'auto'
+      $dropArea.css right: ($dropArea.width() - 30), width: 'auto'
       $dropArea.animate left: 10, right: 10, 200, ->
         $(this).removeClass('hidden')
         $photoCollection.find('.photos-wrapper').html('')

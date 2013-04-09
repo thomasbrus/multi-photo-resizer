@@ -59,9 +59,11 @@ body
   .back-arrow
     display: none
     position: absolute
-    right: 15px
+    right: 0
     top: 50%
+    width: 55px
     height: 24px
+    text-align: center
     text-decoration: none
     font-size: 24px
     color: #699393    
@@ -74,17 +76,19 @@ body
   &:hover
     border-style: solid    
     cursor: pointer
-    // transition: all 0.1s ease-in-out
-    // -webkit-transform: translate(10px, 0) !important
 
     .back-arrow
       font-weight: bold
+
+#drop-area.hidden.dragover
+  transition: all 0.1s ease-in-out
+  -webkit-transform: translate(10px, 0) !important
 
 #photo-collection
   // border: 2px #d2d1cb solid
   // background: #fcfbf4
   position: absolute
-  left: 56px
+  left: 66px
   right: 10px
   bottom: 10px
   top: 95px
@@ -92,7 +96,8 @@ body
   overflow-y: scroll
 
   .photos-wrapper
-    padding: 0 0 15px 0
+    padding: 0 0 30px 0
+    overflow: hidden
 
     .photo
       float: left
@@ -132,3 +137,5 @@ body
   & > h2, & > div
     float: left
 
+._LVhaircutExpand, ._LVshowHaircutExpand
+  display: none
