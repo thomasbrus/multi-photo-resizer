@@ -55,6 +55,7 @@ $(document).ready ->
           $img.attr src: e.target.result
           angle = Math.random() * 4 - 2      
 
+          $title.attr title: file.name
           $title.find('abbr').attr(title: file.name)
           
           $photo.css WebkitTransform: "rotate(#{angle}deg)"
