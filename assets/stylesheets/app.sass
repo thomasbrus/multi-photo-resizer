@@ -4,17 +4,19 @@ html
 
 body
   font-family: "Helvetica Neue", Helvetica,  Arial
+  background: #f0f0f0 url('/images/ps_neutral.png')
 
 #container
   header
     border-bottom: 1px #999 solid
-    background: #f0f0f0
+    background: #f0f0f0 // -webkit-linear-gradient(top, #fafafa 0%, #ebebeb 100%)
 
     h1
       font-size: 32px
       padding: 25px
       color: rgb(82, 82, 82)
       font-family: Domine, Georgia, Helvetica,  Arial
+      // border-bottom: 1px #fff solid
 
 #drop-area
   border: 2px #699393 dashed
@@ -62,8 +64,7 @@ body
     height: 24px
     text-decoration: none
     font-size: 24px
-    color: #699393
-    font-weight: bold
+    color: #699393    
     font-family: "Helvetica Neue", Helvetica,  Arial
   
 #drop-area.hidden
@@ -71,5 +72,64 @@ body
     display: block
 
   &:hover
-    opacity: 1 !important
+    border-style: solid    
     cursor: pointer
+    // transition: all 0.1s ease-in-out
+    // -webkit-transform: translate(10px, 0) !important
+
+    .back-arrow
+      font-weight: bold
+
+#photo-collection
+  // border: 2px #d2d1cb solid
+  // background: #fcfbf4
+  position: absolute
+  left: 56px
+  right: 10px
+  bottom: 10px
+  top: 95px
+  z-index: -100
+  // overflow-x: hidden
+
+  .photos-wrapper
+    padding: 0 10px
+    overflow: hidden
+
+    .photo
+      float: left
+      background: -webkit-linear-gradient(top, rgb(255,255,255) 80%, rgb(240,240,240) 100%)
+      margin: 15px
+      padding: 15px
+      box-shadow: 0 0 2px 0px rgba(0, 0, 0, 0.8)
+      -webkit-backface-visibility: hidden
+
+      h3
+        padding: 15px 0 5px 0
+        font-size: 16px
+        font-family: "Permanent Marker", "Arial Rounded", Arial
+        font-weight: normal
+        color: #141414
+        text-shadow: 0px 1px 0px #fff
+        text-align: center
+        text-transform: uppercase
+
+    // .photo:last-child
+    //   margin-right: 0
+
+    // .photo:hover
+    //   transition: all 0.1s ease-in-out
+    //   -webkit-transform: rotate(0deg) scale(1.01) !important
+    //   cursor: pointer
+
+#settings-bar
+  display: none
+  position: absolute
+  bottom: 10px
+  left: 55px
+  right: 10px
+  height: 60px
+  background: rgba(224, 224, 224, 0.75)
+
+  & > h2, & > div
+    float: left
+
