@@ -3,12 +3,18 @@ $(document).ready ->
   $uploadLink = $dropArea.find('.upload-link-wrapper > h2')
   $filePickerButton = $('#file-picker-button')
   $photoCollection = $('#photo-collection')
+  $resizePhotosButton = $('#resize-photos-button')
+  $settingsBar = $('#settings-bar')
 
   jQuery.event.props.push('dataTransfer')
+
+  selectedPhotos = []
 
   # $dropArea.on 'dragenter dragover dragleave dragend drop', (e) ->
   #   if $(this).hasClass('hidden')
   #     e.stopImmediatePropagation()
+
+  $settingsBar.slideUp(0)
 
   $dropArea.on 'dragenter dragover', ->    
     $(this).addClass 'dragover'
@@ -31,19 +37,50 @@ $(document).ready ->
       handleSelectedFiles this.files
     , 500
 
+  $resizePhotosButton.click ->
+    # zip = new JSZip()
+    # imagesFolder = zip.folder("images")
+
+    # for photo in selectedPhotos      
+    #   data = photo.data_uri.substring(photo.data_uri.indexOf(',') + 1)
+    #   console.log "Adding #{photo.filename} of size #{data.length} bytes"
+    #   console.log "Start of data uri: ", photo.data_uri[0..40]
+    #   console.log "Start of data: ", data[0..40]
+    #   imagesFolder.file(photo.filename, data, base64: true)
+
+    # content = zip.generate()
+    # location.href = "data:application/zip;base64," + content
+
+    # byteArray = new Uint8Array(content.length)
+
+    # i = 0
+
+    # while i < content.length
+    #   byteArray[i] = String.fromCharCode(content.charCodeAt(i) & 0xff)
+    #   i++
+
+
+    # blob = new Blob([content], type: 'application/zip')    
+    # location.href = webkitURL.createObjectURL(blob)
+
   handleSelectedFiles = (files) ->
     files = (file for file in files when file.type[0..5] == "image/")
     return if files.length == 0
 
-    hideDropArea() unless $dropArea.hasClass 'hidden'
+    unless $dropArea.hasClass 'hidden'
+      hideDropArea() 
+      showResizePhotosButton()
 
     # $photoCollection.css width: $photoCollection.width()
+    prependPhotos = $photoCollection.find('.photos-wrapper .photo').length > 0
 
     for file in files  
       fileReader = new FileReader()
 
       fileReader.onload = ((file) ->
         (e) ->
+          selectedPhotos.push filename: file.name, data_uri: e.target.result
+
           $photo = $('<div class="photo">
             <img />
             <h3><abbr></abbr></h3>
@@ -60,7 +97,7 @@ $(document).ready ->
           
           $photo.css WebkitTransform: "rotate(#{angle}deg)"
           
-          if $photoCollection.find('.photos-wrapper .photo').length > 0
+          if prependPhotos
             $photoCollection.find('.photos-wrapper').prepend $photo
           else
             $photoCollection.find('.photos-wrapper').append $photo
@@ -72,11 +109,14 @@ $(document).ready ->
             $title.haircut(placement: 'middle');
       )(file)
 
-      fileReader.readAsDataURL(file)
+      setTimeout ((file, fileReader) ->
+        -> fileReader.readAsDataURL(file)
+      )(file, fileReader), 200
 
   hideDropArea = ->
     $dropArea.animate left: (30 - $dropArea.width()), right: ($dropArea.width() - 30), 200, ->
-      $(this).addClass('hidden').click -> showDropArea()
+      $(this).addClass('hidden').click ->
+        showDropArea(); hideResizePhotosButton()
       $dropArea.css right: 'auto', width: $dropArea.width()      
 
   showDropArea = ->
@@ -84,7 +124,7 @@ $(document).ready ->
       $dropArea.css right: ($dropArea.width() - 30), width: 'auto'
       $dropArea.animate left: 10, right: 10, 200, ->
         $(this).removeClass('hidden')
-        $photoCollection.find('.photos-wrapper').html('')
+        clearPhotoCollection()
 
   resizeToFit = ($image, max_width, max_height) ->
     horizontal_ratio = $image.width() / max_width
@@ -97,5 +137,12 @@ $(document).ready ->
       $image.width ($image.width() / vertical_ratio)
       $image.height max_height
     
+  clearPhotoCollection = ->
+    $photoCollection.find('.photos-wrapper').html('')
+    selectedPhotos = []
 
+  showResizePhotosButton = ->
+    $settingsBar.slideDown(250)
 
+  hideResizePhotosButton = ->
+    $settingsBar.slideUp(150)
