@@ -90,7 +90,7 @@ $(document).ready ->
           $title = $photo.find('h3')
 
           $img.attr src: e.target.result
-          angle = Math.random() * 4 - 2      
+          angle = Math.random() * 3 - 1.5
 
           $title.attr title: file.name
           $title.find('abbr').attr(title: file.name)
