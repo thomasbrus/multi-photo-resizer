@@ -60,7 +60,7 @@ $(document).ready ->
           
           $photo.css WebkitTransform: "rotate(#{angle}deg)"
           
-          if $dropArea.hasClass 'hidden'
+          if $photoCollection.find('.photos-wrapper .photo').length > 0
             $photoCollection.find('.photos-wrapper').prepend $photo
           else
             $photoCollection.find('.photos-wrapper').append $photo

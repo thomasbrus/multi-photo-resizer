@@ -4,7 +4,7 @@ html
 
 body
   font-family: "Helvetica Neue", Helvetica,  Arial
-  background: #f0f0f0 url('/images/ps_neutral.png')
+  background: #f0f0f0 url('/images/background.png')
 
 #container
   header
@@ -26,7 +26,6 @@ body
   right: 10px
   bottom: 10px
   top: 95px
-
 
   &.dragover
     opacity: 0.5 !important
@@ -104,7 +103,7 @@ body
       background: -webkit-linear-gradient(top, rgb(255,255,255) 80%, rgb(240,240,240) 100%)
       margin: 15px
       padding: 15px
-      height: 338px
+      height: 308px
       box-shadow: 0 0 2px 0px rgba(0, 0, 0, 0.8)
       -webkit-backface-visibility: hidden
 
@@ -127,16 +126,38 @@ body
     //   cursor: pointer
 
 #settings-bar
-  display: none
   position: absolute
   bottom: 10px
-  left: 55px
+  left: 66px
   right: 10px
-  height: 60px
-  background: rgba(224, 224, 224, 0.75)
+  padding: 10px
+  // background: #f0f0f0
+  border-radius: 10px
+  // border: 1px #999 solid
 
   & > h2, & > div
     float: left
+    display: none
+
+  .button
+    display: block
+    float: right
+    width: 220px
+    height: 60px
+    background: url('/images/cta-button-bright.png') no-repeat center center
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8)
+    font-size: 22px
+    color: #fff
+    font-weight: bold
+    line-height: 60px
+    text-align: center
+
+  .button:hover
+    cursor: pointer
+    // background-image: url('/images/cta-button-hover.png')
+    text-shadow: 0 1px 2px #000
+    line-height: 59px
+    text-decoration: underline
 
 ._LVhaircutExpand, ._LVshowHaircutExpand
   display: none
