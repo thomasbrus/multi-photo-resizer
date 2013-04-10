@@ -11,8 +11,8 @@ body.dragging
   cursor: pointer !important
   -webkit-user-select: none
 
-  #percentage
-    color: #fff !important
+  // #percentage
+  //   color: #e6e6e6 !important
 
 #container
   header
@@ -137,6 +137,9 @@ body.dragging
         text-align: center
         text-transform: uppercase
 
+      img
+        display: none
+
       canvas
         background: white
 
@@ -190,7 +193,7 @@ body.dragging
         top: 10px
 
       .handle:hover
-        background-image: url('/images/slider-handle-hover.png')        
+        background-image: url('/images/slider-handle-hover.png')
         cursor: pointer
 
       .handle.active
@@ -201,12 +204,19 @@ body.dragging
         height: 60px
         background: url('/images/slider-middle-percentage.png') repeat-x center center
 
+  // .ratio-slider:hover .handle
+  //   background-image: url('/images/slider-handle-hover.png')
+
+  .ratio-slider:hover
+    cursor: pointer
+
   #percentage
     float: left
-    font-size: 30px
+    font-size: 28px
     margin-right: 20px
-    color: #e6e6e6
+    color: #fff
     font-weight: bold
+    font-family: Arial, Helvetica
     // text-shadow: -1px -1px rgba(0,0,0,0.2), 1px 1px rgba(0,0,0,0.2)
     // text-shadow: 0 0 5px rgba(0,0,0,0.5)
     -webkit-text-stroke: 1px #000
