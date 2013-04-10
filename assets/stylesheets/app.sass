@@ -5,11 +5,20 @@ html
 body
   font-family: "Helvetica Neue", Helvetica,  Arial
   background: #f0f0f0 url('/images/background.png')
+  -webkit-user-select: default
+
+body.dragging
+  cursor: pointer !important
+  -webkit-user-select: none
+
+  #percentage
+    color: #fff !important
 
 #container
   header
     border-bottom: 1px #999 solid
     background: #f0f0f0 // -webkit-linear-gradient(top, #fafafa 0%, #ebebeb 100%)
+    overflow: hidden
 
     h1
       font-size: 32px
@@ -17,6 +26,17 @@ body
       color: rgb(82, 82, 82)
       font-family: Domine, Georgia, Helvetica,  Arial
       // border-bottom: 1px #fff solid
+      float: left
+
+    .tagline
+      display: block
+      float: right
+      color: #666
+      font-style: italic
+      font-size: 16px
+      padding: 25px
+      line-height: 32px
+      text-shadow: 1px 1px #fff
 
 #drop-area
   border: 2px #699393 dashed
@@ -95,7 +115,7 @@ body
   overflow-y: scroll
 
   .photos-wrapper
-    padding: 0 0 30px 0
+    padding: 0 0 80px 0
     overflow: hidden
 
     .photo
@@ -135,12 +155,61 @@ body
   border-radius: 10px
   // border: 1px #999 solid
 
-  & > h2, & > div
+  .ratio-slider
     float: left
-    display: none
+    height: 60px
+    margin-right: 10px
+
+    .start, .middle, .end
+      float: left
+      width: 20px
+      height: 60px
+      background-repeat: no-repeat
+      background-position: center center
+
+    .start
+      background-image: url('/images/slider-start.png')
+    
+    .end
+      background-image: url('/images/slider-end.png')
+    
+    .middle
+      width: 0
+      background-image: url('/images/slider-middle.png')
+      background-repeat: repeat-x
+      position: relative
+
+      .handle
+        width: 40px
+        height: 40px
+        background: url('/images/slider-handle.png') no-repeat center center
+        position: absolute
+        top: 10px
+
+      .handle:hover
+        background-image: url('/images/slider-handle-hover.png')        
+        cursor: pointer
+
+      .handle.active
+        background-image: url('/images/slider-handle-active.png')
+
+      .percentage
+        width: 120px
+        height: 60px
+        background: url('/images/slider-middle-percentage.png') repeat-x center center
+
+  #percentage
+    float: left
+    font-size: 30px
+    margin-right: 20px
+    color: #e6e6e6
+    font-weight: bold
+    // text-shadow: -1px -1px rgba(0,0,0,0.2), 1px 1px rgba(0,0,0,0.2)
+    // text-shadow: 0 0 5px rgba(0,0,0,0.5)
+    -webkit-text-stroke: 1px #000
+    line-height: 60px
 
   .button
-    display: block
     float: right
     width: 220px
     height: 60px
@@ -154,14 +223,13 @@ body
 
   .button:hover
     cursor: pointer
-    // background-image: url('/images/cta-button-hover.png')
     text-shadow: 0 1px 2px #000
     line-height: 58px
     text-decoration: underline
 
   .button:active
-    color: #eeffb0
-    text-shadow: 0 -1px 0 #173407
+    color: #eeffb0 // f5ffd0
+    text-shadow: 0 -1px 0 #173407, 0 -1px rgba(0, 0, 0, 0.5)
     line-height: 60px
 
 ._LVhaircutExpand, ._LVshowHaircutExpand

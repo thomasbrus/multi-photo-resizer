@@ -1,3 +1,3 @@
-# Batch Photo Resizer
+# Multi Photo Resizer
 
 Resize photos in your web browser.

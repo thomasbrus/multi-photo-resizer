@@ -1,5 +1,6 @@
 <header>
-  <h1>Multi Photo Resizer</h1>
+  <p class="tagline">The most awesome way to resize photos on the web!</p>
+  <h1>Multi Photo Resizer</h1>  
 </header>
 
 <div id="drop-area">
@@ -20,12 +21,17 @@
 </div>
 
 <div id="settings-bar">
-  <div class="ratio">
-    <label>Ratio:</label>
-    <!-- <input id="ratio" type="range" min="0" max="100" step="5" value="40"/> -->
-    <input type="number" name="ratio" min="10" step="5" max="100" value="40" />
+  <div class="ratio-slider">
+    <div class="start"></div>
+    <div class="middle">
+      <div class="percentage"></div>
+      <div class="handle"></div>
+    </div>
+    <div class="end"></div>
   </div>
-
+  <div id="percentage">
+    100%
+  </div>
   <div class="button" id="resize-photos-button">
     Resize Photos
   </div>

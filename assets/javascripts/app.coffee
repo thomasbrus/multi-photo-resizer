@@ -5,14 +5,12 @@ $(document).ready ->
   $photoCollection = $('#photo-collection')
   $resizePhotosButton = $('#resize-photos-button')
   $settingsBar = $('#settings-bar')
+  $ratioSlider = $settingsBar.find('.ratio-slider')
 
   jQuery.event.props.push('dataTransfer')
 
   selectedPhotos = []
-
-  # $dropArea.on 'dragenter dragover dragleave dragend drop', (e) ->
-  #   if $(this).hasClass('hidden')
-  #     e.stopImmediatePropagation()
+  ratioSliderHandlePressed = false
 
   $settingsBar.slideUp(0)
 
@@ -36,6 +34,54 @@ $(document).ready ->
     setTimeout =>
       handleSelectedFiles this.files
     , 500
+
+  $(window).mousemove (e) ->
+    if ratioSliderHandlePressed
+      $handle = $ratioSlider.find('.handle')
+      $percentage = $ratioSlider.find('.percentage')
+
+      offset = e.pageX - $ratioSlider.offset().left - 40
+      # step = ($ratioSlider.find('.middle').width()) / 10
+      # offset = Math.round(offset / step) * step
+      offset = Math.min($ratioSlider.width() - 60, Math.max(-20, offset))
+      percentage = (offset + 20) / ($ratioSlider.find('.middle').width()) * 100
+
+      $handle.css left: offset
+      $percentage.css width: (offset + 20)
+      $ratioSlider.data percentage: percentage
+      $settingsBar.find('#percentage').text Math.round(percentage) + '%'
+      
+      $('body').addClass 'dragging'
+
+  $ratioSlider.find('.handle').mousedown (e) ->
+    ratioSliderHandlePressed = true
+    $ratioSlider.find('.handle').addClass 'active'
+    e.originalEvent.preventDefault()
+
+  $(window).mouseup ->
+    ratioSliderHandlePressed = false
+    $('body').removeClass 'dragging'
+    $ratioSlider.find('.handle').removeClass 'active'
+
+  $(window).resize ->
+    resizeRatioSlider()
+
+  resizeRatioSlider = ->
+    $handle = $ratioSlider.find('.handle')
+    $percentage = $ratioSlider.find('.percentage')
+
+    width = parseInt($settingsBar.width()) - 371
+    percentage = $ratioSlider.data('percentage')
+
+    $ratioSlider.find('.middle').css width: width
+
+    offset = ($ratioSlider.find('.middle').width() * (percentage / 100)) - 20
+
+    $handle.css left: offset
+    $percentage.css width: (offset + 20)
+
+  $ratioSlider.data percentage: 100
+  resizeRatioSlider()
 
   $resizePhotosButton.click ->
     # zip = new JSZip()
@@ -121,10 +167,10 @@ $(document).ready ->
 
   showDropArea = ->
     if $dropArea.hasClass 'hidden'
+      clearPhotoCollection()
       $dropArea.css right: ($dropArea.width() - 30), width: 'auto'
       $dropArea.animate left: 10, right: 10, 200, ->
         $(this).removeClass('hidden')
-        clearPhotoCollection()
 
   resizeToFit = ($image, max_width, max_height) ->
     horizontal_ratio = $image.width() / max_width
