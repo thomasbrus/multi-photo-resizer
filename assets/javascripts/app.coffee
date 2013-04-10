@@ -152,6 +152,7 @@ $(document).ready ->
 
           $img.on 'load', ->
             resizeToFit $(this), 360, 270
+            replaceImgWithCanvas $(this)
             $title.haircut(placement: 'middle');
       )(file)
 
@@ -192,3 +193,13 @@ $(document).ready ->
 
   hideResizePhotosButton = ->
     $settingsBar.slideUp(150)
+
+  replaceImgWithCanvas = ($img) ->
+    width = $img.width()
+    height = $img.height()
+
+    $canvas = $('<canvas width="' + width + '" height="' + height + '"></canvas>')
+    $img.replaceWith $canvas
+
+    context = $canvas[0].getContext('2d')
+    context.drawImage($img[0], 0, 0, width, height)
