@@ -41,7 +41,7 @@ $(document).ready ->
       $percentage = $ratioSlider.find('.percentage')
 
       offset = e.pageX - $ratioSlider.offset().left - 40
-      # step = (($ratioSlider.find('.middle').width()) + 20) / 10
+      # step = ($ratioSlider.find('.middle').width()) / 10
       # offset = Math.round(offset / step) * step
       offset = Math.min($ratioSlider.width() - 60, Math.max(-20, offset))
       percentage = (offset + 20) / ($ratioSlider.find('.middle').width()) * 100
