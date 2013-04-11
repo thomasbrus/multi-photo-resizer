@@ -44,12 +44,12 @@ $(document).ready ->
       # step = ($ratioSlider.find('.middle').width()) / 10
       # offset = Math.round(offset / step) * step
       offset = Math.min($ratioSlider.width() - 50, Math.max(-10, offset))
-      percentage = (offset + 10) / ($ratioSlider.find('.middle').width()) * 100
+      percentage = Math.round((offset + 10) / ($ratioSlider.find('.middle').width()) * 100)
 
       $handle.css left: (offset - 10)
       $percentage.css width: (offset + 10)
       $ratioSlider.data percentage: percentage
-      $settingsBar.find('#percentage').text Math.round(percentage) + '%'
+      $settingsBar.find('#percentage').text percentage + '%'
       
       $('body').addClass 'dragging'
 
@@ -84,29 +84,43 @@ $(document).ready ->
   resizeRatioSlider()
 
   $resizePhotosButton.click ->
-    # zip = new JSZip()
-    # imagesFolder = zip.folder("images")
+    $canvas = $('#rendering-canvas')
+    context = $canvas[0].getContext('2d')
+    percentage = $ratioSlider.data('percentage')
 
-    # for photo in selectedPhotos      
-    #   data = photo.data_uri.substring(photo.data_uri.indexOf(',') + 1)
-    #   console.log "Adding #{photo.filename} of size #{data.length} bytes"
-    #   console.log "Start of data uri: ", photo.data_uri[0..40]
-    #   console.log "Start of data: ", data[0..40]
-    #   imagesFolder.file(photo.filename, data, base64: true)
+    zip = new JSZip()
+    imagesFolder = zip.folder('images')
 
-    # content = zip.generate()
-    # location.href = "data:application/zip;base64," + content
+    for photo in selectedPhotos
+      [originalWidth, originalHeight] = photo.original_dimension
 
-    # byteArray = new Uint8Array(content.length)
+      resizedWidth = originalWidth * (percentage / 100)
+      resizedHeight = originalHeight * (percentage / 100)
 
-    # i = 0
+      $canvas.attr width: resizedWidth, height: resizedHeight
+      $canvas[0].width = resizedWidth
+      $canvas[0].height = resizedHeight
 
-    # while i < content.length
-    #   byteArray[i] = String.fromCharCode(content.charCodeAt(i) & 0xff)
-    #   i++
+      context.drawImage(photo.$img[0], 0, 0, resizedWidth, resizedHeight)
+      data_uri = $canvas[0].toDataURL('image/jpeg')
 
-    # blob = new Blob([content], type: 'application/zip')    
-    # location.href = webkitURL.createObjectURL(blob)
+      data = data_uri.substring(data_uri.indexOf(',') + 1)
+      imagesFolder.file(photo.filename, data, base64: true)
+    
+    content = zip.generate()
+    blob = dataToBlob(content, 'application/zip')
+    location.href = webkitURL.createObjectURL(blob)
+
+  dataToBlob = (data, type) ->
+    binary = atob(data)
+    bytes = []
+    i = 0
+    
+    while i < binary.length
+      bytes.push(binary.charCodeAt(i))
+      i++  
+    
+    new Blob([new Uint8Array(bytes)], type: type)
 
   handleSelectedFiles = (files) ->
     files = (file for file in files when file.type[0..5] == "image/")
@@ -117,43 +131,46 @@ $(document).ready ->
       showResizePhotosButton()
 
     # $photoCollection.css width: $photoCollection.width()
-    prependPhotos = $photoCollection.find('.photos-wrapper .photo').length > 0
+    prependPhotos = $photoCollection.find('.photos-wrapper .photo').length > 0    
 
     for file in files  
       fileReader = new FileReader()
 
-      fileReader.onload = ((file) ->
-        (e) ->
-          selectedPhotos.push filename: file.name, data_uri: e.target.result
+      $photo = $('<div class="photo">
+        <img class="loading" />
+        <h3><abbr></abbr></h3>
+      </div>')
+      
+      if prependPhotos
+        $photoCollection.find('.photos-wrapper').prepend $photo
+      else
+        $photoCollection.find('.photos-wrapper').append $photo
 
-          $photo = $('<div class="photo">
-            <img />
-            <h3><abbr></abbr></h3>
-          </div>')
+      # fileReader.onload = ((file, $photo) ->
+      #   (e) ->
+      #     $img = $photo.find('img')
+      #     $img.removeClass('loading')
+      #     $title = $photo.find('h3')
 
-          $img = $photo.find('img')
-          $title = $photo.find('h3')
+      #     $img.attr src: e.target.result
+      #     angle = Math.random() * 3 - 1.5
 
-          $img.attr src: e.target.result
-          angle = Math.random() * 3 - 1.5
-
-          $title.attr title: file.name
-          $title.find('abbr').attr(title: file.name)
+      #     $title.attr title: file.name
+      #     $title.find('abbr').attr(title: file.name)
           
-          $photo.css WebkitTransform: "rotate(#{angle}deg)"
+      #     $photo.css WebkitTransform: "rotate(#{angle}deg)"
           
-          if prependPhotos
-            $photoCollection.find('.photos-wrapper').prepend $photo
-          else
-            $photoCollection.find('.photos-wrapper').append $photo
-
-          # TODO: tekenen op canvas element ...
-
-          $img.on 'load', ->
-            resizeToFit $(this), 360, 270
-            replaceImgWithCanvas $(this)
-            $title.haircut(placement: 'middle');
-      )(file)
+      #     $img.on 'load', ->
+      #       selectedPhotos.push {
+      #         filename: file.name,
+      #         data_uri: e.target.result,
+      #         $img: $(this),
+      #         original_dimension: [$(this).width(), $(this).height()]
+      #       }
+      #       resizeToFit $(this), 360, 270
+      #       replaceImgWithCanvas $(this)
+      #       $title.haircut(placement: 'middle');
+      # )(file, $photo)
 
       setTimeout ((file, fileReader) ->
         -> fileReader.readAsDataURL(file)
@@ -167,21 +184,21 @@ $(document).ready ->
 
   showDropArea = ->
     if $dropArea.hasClass 'hidden'
-      clearPhotoCollection()
       $dropArea.css right: ($dropArea.width() - 30), width: 'auto'
       $dropArea.animate left: 10, right: 10, 200, ->
         $(this).removeClass('hidden')
+        clearPhotoCollection()
 
   resizeToFit = ($image, max_width, max_height) ->
     horizontal_ratio = $image.width() / max_width
     vertical_ratio = $image.height() / max_height
 
     if horizontal_ratio > vertical_ratio
-      $image.height ($image.height() / horizontal_ratio)
-      $image.width max_width
+      $image.attr height: ($image.height() / horizontal_ratio)
+      $image.attr width: max_width
     else
-      $image.width ($image.width() / vertical_ratio)
-      $image.height max_height
+      $image.attr width: ($image.width() / vertical_ratio)
+      $image.attr height: max_height
     
   clearPhotoCollection = ->
     $photoCollection.find('.photos-wrapper').html('')
@@ -191,7 +208,7 @@ $(document).ready ->
     $settingsBar.slideDown(250)
 
   hideResizePhotosButton = ->
-    # $settingsBar.slideUp(150)
+    # $settingsBar.slideUp(250)
     $settingsBar.slideUp(0)
 
   replaceImgWithCanvas = ($img) ->
@@ -199,7 +216,7 @@ $(document).ready ->
     height = $img.height()
 
     $canvas = $('<canvas width="' + width + '" height="' + height + '"></canvas>')
-    $img.replaceWith $canvas
+    $canvas.insertAfter $img
 
     context = $canvas[0].getContext('2d')
     context.drawImage($img[0], 0, 0, width, height)

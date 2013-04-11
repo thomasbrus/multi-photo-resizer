@@ -52,7 +52,7 @@ body.dragging
 
   .upload-link-wrapper
     width: 100%
-    top: 50%
+    top: 47%
     position: absolute    
 
     h2
@@ -79,12 +79,13 @@ body.dragging
     display: none
     position: absolute
     right: 0
-    top: 50%
+    top: 47%
     width: 55px
     height: 24px
+    line-height: 24px
     text-align: center
     text-decoration: none
-    font-size: 24px
+    font-size: 18px
     color: #699393    
     font-family: "Helvetica Neue", Helvetica,  Arial
   
@@ -95,9 +96,6 @@ body.dragging
   &:hover
     border-style: solid    
     cursor: pointer
-
-    .back-arrow
-      font-weight: bold
 
 #drop-area.hidden.dragover
   transition: all 0.1s ease-in-out
@@ -136,6 +134,16 @@ body.dragging
         text-shadow: 0px 1px 0px #fff
         text-align: center
         text-transform: uppercase
+
+      img
+        display: none
+
+      img.loading
+        display: block
+        width: 270px
+        height: 270px
+        background: red
+
 
       canvas
         background: white
@@ -253,4 +261,7 @@ body.dragging
     line-height: 60px
 
 ._LVhaircutExpand, ._LVshowHaircutExpand
+  display: none
+
+#rendering-canvas
   display: none
