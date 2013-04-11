@@ -80,7 +80,7 @@ $(document).ready ->
     $handle.css left: offset
     $percentage.css width: (offset + 20)
 
-  $ratioSlider.data percentage: 100
+  $ratioSlider.data percentage: 30
   resizeRatioSlider()
 
   $resizePhotosButton.click ->
