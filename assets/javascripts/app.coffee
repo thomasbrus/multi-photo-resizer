@@ -91,7 +91,6 @@ $(document).ready ->
     fixDuplicateFileNames selectedPhotos
 
     zip = new JSZip()
-    imagesFolder = zip.folder('images')
 
     for photo in selectedPhotos
       [originalWidth, originalHeight] = photo.original_dimension
@@ -107,7 +106,7 @@ $(document).ready ->
       data_uri = $canvas[0].toDataURL('image/jpeg')
 
       data = data_uri.substring(data_uri.indexOf(',') + 1)
-      imagesFolder.file(photo.filename, data, base64: true)
+      zip.file(photo.filename, data, base64: true)
 
       console.log [photo, data.length]
     
