@@ -254,3 +254,9 @@ $(document).ready ->
 
     context = $canvas[0].getContext('2d')
     context.drawImage($img[0], 0, 0, width, height)
+
+  preloadImages = ->
+    $.each ['slider-handle-active.png', 'slider-handle-hover.png'], (i, filename) ->
+      (new Image()).src = '/images/' + filename
+
+  preloadImages()
