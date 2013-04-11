@@ -162,6 +162,18 @@ body.dragging
     float: left
     height: 60px
     margin-right: 10px
+    padding: 0 10px
+    position: relative
+    overflow: hidden
+
+    .transparent-border
+      border-radius: 20px
+      position: absolute
+      left: 10px
+      top: 10px
+      bottom: 10px
+      right: 10px
+      box-shadow: 0 0 0px 5px rgba(255,255,255,0.5)
 
     .start, .middle, .end
       float: left
@@ -198,19 +210,24 @@ body.dragging
 
       .percentage
         width: 120px
-        height: 60px
+        height: 30px
+        margin-top: 15px
         background: url('/images/slider-middle-percentage.png') repeat-x center center
 
   #percentage
     float: left
-    font-size: 28px
-    margin-right: 20px
-    color: #fff
+    font-size: 22px
+    color: #333
     font-weight: bold
-    text-shadow: 0 -1px rgba(0,0,0,0.5), 0 1px rgba(0,0,0,0.5)
-    // text-shadow: 0 0 5px rgba(0,0,0,0.5)
-    -webkit-text-stroke: 1px #000
-    line-height: 60px
+    // text-shadow: 1px 1px 0 #fff
+    line-height: 40px
+    background: -webkit-linear-gradient(top, #fff 0%, #ebebeb 100%)
+    border-radius: 20px
+    text-align: right
+    padding: 0 15px
+    margin-top: 10px
+    border: rgb(121, 121, 121) 1px solid
+    box-shadow: 0 0 0px 5px rgba(255,255,255,0.5)
 
   .button
     float: right

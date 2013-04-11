@@ -43,11 +43,11 @@ $(document).ready ->
       offset = e.pageX - $ratioSlider.offset().left - 40
       # step = ($ratioSlider.find('.middle').width()) / 10
       # offset = Math.round(offset / step) * step
-      offset = Math.min($ratioSlider.width() - 60, Math.max(-20, offset))
-      percentage = (offset + 20) / ($ratioSlider.find('.middle').width()) * 100
+      offset = Math.min($ratioSlider.width() - 50, Math.max(-10, offset))
+      percentage = (offset + 10) / ($ratioSlider.find('.middle').width()) * 100
 
-      $handle.css left: offset
-      $percentage.css width: (offset + 20)
+      $handle.css left: (offset - 10)
+      $percentage.css width: (offset + 10)
       $ratioSlider.data percentage: percentage
       $settingsBar.find('#percentage').text Math.round(percentage) + '%'
       
@@ -70,7 +70,7 @@ $(document).ready ->
     $handle = $ratioSlider.find('.handle')
     $percentage = $ratioSlider.find('.percentage')
 
-    width = parseInt($settingsBar.width()) - 371
+    width = parseInt($settingsBar.width()) - 400
     percentage = $ratioSlider.data('percentage')
 
     $ratioSlider.find('.middle').css width: width
@@ -104,7 +104,6 @@ $(document).ready ->
     # while i < content.length
     #   byteArray[i] = String.fromCharCode(content.charCodeAt(i) & 0xff)
     #   i++
-
 
     # blob = new Blob([content], type: 'application/zip')    
     # location.href = webkitURL.createObjectURL(blob)
@@ -192,7 +191,8 @@ $(document).ready ->
     $settingsBar.slideDown(250)
 
   hideResizePhotosButton = ->
-    $settingsBar.slideUp(150)
+    # $settingsBar.slideUp(150)
+    $settingsBar.slideUp(0)
 
   replaceImgWithCanvas = ($img) ->
     width = $img.width()
