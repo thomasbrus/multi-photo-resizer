@@ -130,14 +130,13 @@ $(document).ready ->
       hideDropArea() 
       showResizePhotosButton()
 
-    # $photoCollection.css width: $photoCollection.width()
-    prependPhotos = $photoCollection.find('.photos-wrapper .photo').length > 0    
+    prependPhotos = false # $photoCollection.find('.photos-wrapper .photo').length > 0    
 
     for file in files  
       fileReader = new FileReader()
 
       $photo = $('<div class="photo">
-        <img class="loading" />
+        <img />
         <h3><abbr></abbr></h3>
       </div>')
       
@@ -145,48 +144,63 @@ $(document).ready ->
         $photoCollection.find('.photos-wrapper').prepend $photo
       else
         $photoCollection.find('.photos-wrapper').append $photo
+      
+      $photo.css visibility: 'hidden'
 
-      # fileReader.onload = ((file, $photo) ->
-      #   (e) ->
-      #     $img = $photo.find('img')
-      #     $img.removeClass('loading')
-      #     $title = $photo.find('h3')
+      fileReader.onload = ((file, $photo) ->
+        (e) ->
+          $img = $photo.find('img')
+          $title = $photo.find('h3')
 
-      #     $img.attr src: e.target.result
-      #     angle = Math.random() * 3 - 1.5
+          $img.attr src: e.target.result
+          angle = Math.random() * 3 - 1.5
 
-      #     $title.attr title: file.name
-      #     $title.find('abbr').attr(title: file.name)
+          $title.attr title: file.name
+          $title.find('abbr').attr(title: file.name)
           
-      #     $photo.css WebkitTransform: "rotate(#{angle}deg)"
-          
-      #     $img.on 'load', ->
-      #       selectedPhotos.push {
-      #         filename: file.name,
-      #         data_uri: e.target.result,
-      #         $img: $(this),
-      #         original_dimension: [$(this).width(), $(this).height()]
-      #       }
-      #       resizeToFit $(this), 360, 270
-      #       replaceImgWithCanvas $(this)
-      #       $title.haircut(placement: 'middle');
-      # )(file, $photo)
+          $photo.css WebkitTransform: "rotate(#{angle}deg)"
+
+          $img.on 'load', ->
+            selectedPhotos.push {
+              filename: file.name,
+              data_uri: e.target.result,
+              $img: $(this),
+              original_dimension: [$(this).width(), $(this).height()]
+            }
+            resizeToFit $(this), 360, 270
+            replaceImgWithCanvas $(this)
+            $title.haircut(placement: 'middle');
+
+            setTimeout (=>
+              $photo.css(visibility: 'visible').hide().fadeIn(300)
+            ), 0
+      )(file, $photo)
 
       setTimeout ((file, fileReader) ->
         -> fileReader.readAsDataURL(file)
-      )(file, fileReader), 200
+      )(file, fileReader), 250
 
   hideDropArea = ->
     $dropArea.animate left: (30 - $dropArea.width()), right: ($dropArea.width() - 30), 200, ->
-      $(this).addClass('hidden').click ->
-        showDropArea(); hideResizePhotosButton()
+      $(this).addClass('hidden')
+
+      $(this).click ->        
+        showDropArea()
+        hideResizePhotosButton()
+
+      $(this).hover (->
+        $(this).css borderStyle: 'solid', cursor: 'pointer'
+      ), (->
+        $(this).css borderStyle: 'dashed', cursor: 'auto'
+      )
+
       $dropArea.css right: 'auto', width: $dropArea.width()      
 
   showDropArea = ->
     if $dropArea.hasClass 'hidden'
       $dropArea.css right: ($dropArea.width() - 30), width: 'auto'
       $dropArea.animate left: 10, right: 10, 200, ->
-        $(this).removeClass('hidden')
+        $(this).removeClass('hidden').trigger('mouseleave').off('mouseenter mouseleave click')
         clearPhotoCollection()
 
   resizeToFit = ($image, max_width, max_height) ->
@@ -216,7 +230,7 @@ $(document).ready ->
     height = $img.height()
 
     $canvas = $('<canvas width="' + width + '" height="' + height + '"></canvas>')
-    $canvas.insertAfter $img
+    $canvas.insertAfter($img)
 
     context = $canvas[0].getContext('2d')
     context.drawImage($img[0], 0, 0, width, height)

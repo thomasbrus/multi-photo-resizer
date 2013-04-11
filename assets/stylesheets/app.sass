@@ -93,9 +93,9 @@ body.dragging
   .back-arrow
     display: block
 
-  &:hover
-    border-style: solid    
-    cursor: pointer
+  // &:hover
+  //   border-style: solid !important
+  //   cursor: pointer
 
 #drop-area.hidden.dragover
   transition: all 0.1s ease-in-out
@@ -137,13 +137,6 @@ body.dragging
 
       img
         display: none
-
-      img.loading
-        display: block
-        width: 270px
-        height: 270px
-        background: red
-
 
       canvas
         background: white
