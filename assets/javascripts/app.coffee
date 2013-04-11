@@ -88,6 +88,8 @@ $(document).ready ->
     context = $canvas[0].getContext('2d')
     percentage = $ratioSlider.data('percentage')
 
+    fixDuplicateFileNames selectedPhotos
+
     zip = new JSZip()
     imagesFolder = zip.folder('images')
 
@@ -106,6 +108,8 @@ $(document).ready ->
 
       data = data_uri.substring(data_uri.indexOf(',') + 1)
       imagesFolder.file(photo.filename, data, base64: true)
+
+      console.log [photo, data.length]
     
     content = zip.generate()
     blob = dataToBlob(content, 'application/zip')
@@ -122,6 +126,10 @@ $(document).ready ->
     
     new Blob([new Uint8Array(bytes)], type: type)
 
+  fixDuplicateFileNames = (selectedPhotos) ->
+    # ...
+    selectedPhotos
+
   handleSelectedFiles = (files) ->
     files = (file for file in files when file.type[0..5] == "image/")
     return if files.length == 0
@@ -130,9 +138,9 @@ $(document).ready ->
       hideDropArea() 
       showResizePhotosButton()
 
-    prependPhotos = false # $photoCollection.find('.photos-wrapper .photo').length > 0    
+    prependPhotos = $photoCollection.find('.photos-wrapper .photo').length > 0    
 
-    for file in files  
+    handleFile = (file) =>  
       fileReader = new FileReader()
 
       $photo = $('<div class="photo">
@@ -147,6 +155,13 @@ $(document).ready ->
       
       $photo.css visibility: 'hidden'
 
+      # fileReader.onprogress = (e) ->
+      #   if (e.lengthComputable)
+      #     total += e.total
+      #     loaded += e.loaded
+      #     percentLoaded = Math.round((total / loaded) * 100)
+      #     console.log total
+
       fileReader.onload = ((file, $photo) ->
         (e) ->
           $img = $photo.find('img')
@@ -160,6 +175,9 @@ $(document).ready ->
           
           $photo.css WebkitTransform: "rotate(#{angle}deg)"
 
+          $img[0].onprogress = (e) ->
+            console.log e
+
           $img.on 'load', ->
             selectedPhotos.push {
               filename: file.name,
@@ -172,13 +190,15 @@ $(document).ready ->
             $title.haircut(placement: 'middle');
 
             setTimeout (=>
-              $photo.css(visibility: 'visible').hide().fadeIn(300)
+              $photo.css(visibility: 'visible').hide().fadeIn 150, (=>
+                handleFile(files.shift()) if files.length > 0
+              )
             ), 0
-      )(file, $photo)
+      )(file, $photo)      
 
-      setTimeout ((file, fileReader) ->
-        -> fileReader.readAsDataURL(file)
-      )(file, fileReader), 250
+      fileReader.readAsDataURL(file)
+
+    setTimeout (=> handleFile(files.shift())), 250    
 
   hideDropArea = ->
     $dropArea.animate left: (30 - $dropArea.width()), right: ($dropArea.width() - 30), 200, ->
