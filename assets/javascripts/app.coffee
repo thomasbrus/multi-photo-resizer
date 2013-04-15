@@ -107,8 +107,6 @@ $(document).ready ->
 
       data = data_uri.substring(data_uri.indexOf(',') + 1)
       zip.file(photo.filename, data, base64: true)
-
-      console.log [photo, data.length]
     
     content = zip.generate()
     blob = dataToBlob(content, 'application/zip')
@@ -173,9 +171,6 @@ $(document).ready ->
           $title.find('abbr').attr(title: file.name)
           
           $photo.css WebkitTransform: "rotate(#{angle}deg)"
-
-          $img[0].onprogress = (e) ->
-            console.log e
 
           $img.on 'load', ->
             selectedPhotos.push {
