@@ -195,7 +195,7 @@ $(document).ready ->
     setTimeout (=> handleFile(files.shift())), 250    
 
   hideDropArea = ->
-    $dropArea.animate left: (30 - $dropArea.width()), right: ($dropArea.width() - 30), 200, ->
+    $dropArea.animate left: (10 - $dropArea.width()), right: ($dropArea.width() - 10), 200, ->
       $(this).addClass('hidden')
 
       $(this).click ->        
@@ -213,7 +213,7 @@ $(document).ready ->
   showDropArea = ->
     if $dropArea.hasClass 'hidden'
       $dropArea.css right: ($dropArea.width() - 30), width: 'auto'
-      $dropArea.animate left: 10, right: 10, 200, ->
+      $dropArea.animate left: 20, right: 20, 200, ->
         $(this).removeClass('hidden').trigger('mouseleave').off('mouseenter mouseleave click')
         clearPhotoCollection()
 
