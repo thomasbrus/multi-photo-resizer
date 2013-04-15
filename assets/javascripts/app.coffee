@@ -168,7 +168,8 @@ $(document).ready ->
           angle = Math.random() * 3 - 1.5
 
           $title.attr title: file.name
-          $title.find('abbr').attr(title: file.name)
+          filename = file.name.replace(/\.[^/.]+$/, "")
+          $title.find('abbr').attr(title: filename)
           
           $photo.css WebkitTransform: "rotate(#{angle}deg)"
 
